@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Rifa</title>
+
+<style>
+body {
+  background: black;
+  color: white;
+  text-align: center;
+  font-family: Arial;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  max-width: 400px;
+  margin: 20px auto;
+}
+
+.numero {
+  padding: 15px;
+  background: #222;
+  cursor: pointer;
+}
+
+.numero:hover {
+  transform: scale(1.05);
+}
+
+.ocupado {
+  background: red;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎟️ Rifa</h1>
+
+<div id="grid" class="grid"></div>
+
+<script>
+
+const grid = document.getElementById("grid");
+
+for (let i = 1; i <= 100; i++) {
+  const div = document.createElement("div");
+  div.className = "numero";
+  div.textContent = i;
+
+  div.onclick = () => {
+    const mensaje = `Hola, quiero el número ${i}`;
+    window.open(`https://wa.me/18494501097?text=${encodeURIComponent(mensaje)}`);
+  };
+
+  grid.appendChild(div);
+}
+
+</script>
+
+</body>
+</html>
