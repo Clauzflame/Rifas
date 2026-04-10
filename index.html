@@ -2,211 +2,57 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Golpe de Suerte</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Rifa</title>
 
 <style>
-
 body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
+  background: black;
   color: white;
   text-align: center;
-  background: 
-    linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.95)),
-    url("Fondo1.jpg") center/cover no-repeat fixed;
-}
-
-.portada {
-  width: 100%;
-  height: 180px;
-  background: url("Portada.jpg") center/contain no-repeat;
-  background-color: black;
-}
-
-h1 {
-  margin: 20px 0 10px;
-  font-size: 30px;
-}
-
-.info-container {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  flex-wrap: wrap;
-}
-
-.box {
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(10px);
-  padding: 15px 25px;
-  border-radius: 12px;
-}
-
-.estado {
-  margin: 15px;
-  font-size: 14px;
-  color: #ccc;
+  font-family: Arial;
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
-  padding: 20px;
-  max-width: 520px;
-  margin: auto;
+  gap: 10px;
+  max-width: 400px;
+  margin: 20px auto;
 }
 
 .numero {
   padding: 15px;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.05);
+  background: gray;
   cursor: pointer;
-  transition: 0.25s;
-}
-
-.numero:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 15px gold;
 }
 
 .ocupado {
-  background: rgba(80,0,0,0.7);
-  cursor: not-allowed;
+  background: red;
 }
-
-.boton {
-  display: inline-block;
-  margin: 20px;
-  padding: 15px 30px;
-  background: linear-gradient(145deg, #ffd700, #ffb300);
-  color: black;
-  font-weight: bold;
-  border-radius: 12px;
-  text-decoration: none;
-}
-
-.admin-btn {
-  margin: 10px;
-  padding: 8px 15px;
-  background: transparent;
-  border: 1px solid #555;
-  color: #aaa;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.admin-btn:hover {
-  color: gold;
-  border-color: gold;
-}
-
 </style>
 </head>
 
 <body>
 
-<div class="portada"></div>
+<h1>TEST NUMEROS</h1>
 
-<h1>🎟️ Calentador de agua 110v</h1>
-
-<div class="info-container">
-  <div class="box">💰 RD$200</div>
-  <div class="box">📅 20 Abril</div>
-</div>
-
-<div class="estado" id="contador"></div>
-
-<div class="grid" id="grid"></div>
-
-<a class="boton" href="https://wa.me/18494501097" target="_blank">
-  Comprar por WhatsApp
-</a>
-
-<button class="admin-btn" onclick="loginAdmin()">Admin</button>
-
-<!-- 🔥 FIREBASE -->
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+<div id="grid" class="grid"></div>
 
 <script>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyD5iRdci7gDxTZcEizPJ5OfzxgcaaVWINc",
-  authDomain: "rifa-clau.firebaseapp.com",
-  projectId: "rifa-clau"
-};
+const grid = document.getElementById("grid");
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+for (let i = 1; i <= 100; i++) {
+  const div = document.createElement("div");
+  div.className = "numero";
+  div.textContent = i;
 
-const total = 100;
-const telefono = "18494501097";
+  div.onclick = () => {
+    div.classList.toggle("ocupado");
+  };
 
-let modoAdmin = false;
-
-function loginAdmin() {
-  const pass = prompt("Contraseña:");
-  if (pass === "1097") {
-    modoAdmin = true;
-    alert("Admin activado");
-  }
+  grid.appendChild(div);
 }
-
-db.collection("rifa").doc("numeros")
-.onSnapshot((doc) => {
-
-  const grid = document.getElementById("grid");
-  const contador = document.getElementById("contador");
-
-  let ocupados = [];
-
-  if (doc.exists) {
-    ocupados = doc.data().lista || [];
-  }
-
-  grid.innerHTML = "";
-  contador.textContent = `Disponibles: ${total - ocupados.length} / ${total}`;
-
-  for (let i = 1; i <= total; i++) {
-
-    const div = document.createElement("div");
-    div.classList.add("numero");
-    div.textContent = i;
-
-    if (ocupados.includes(i)) {
-      div.classList.add("ocupado");
-    }
-
-    div.onclick = () => {
-
-     if (modoAdmin) {
-
-  let nuevaLista = [...ocupados];
-
-  if (nuevaLista.includes(i)) {
-    nuevaLista = nuevaLista.filter(num => num !== i);
-  } else {
-    nuevaLista.push(i);
-  }
-
-  db.collection("rifa").doc("numeros").set({
-    lista: nuevaLista
-  });
-
-}
-      } else {
-        const mensaje = `Hola, quiero el número ${i}`;
-        window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`);
-      }
-
-    };
-
-    grid.appendChild(div);
-  }
-
-});
 
 </script>
 
