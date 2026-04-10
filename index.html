@@ -116,7 +116,6 @@ h1 {
 }
 
 </style>
-
   .admin-btn {
   display: block;
   margin: 10px auto 30px;
@@ -162,60 +161,99 @@ h1 {
 
 <script>
 
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// 🔴 PEGA AQUÍ EL CONFIG QUE COPIASTE DE FIREBASE
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyD5iRdci7gDxTZcEizPJ5OfzxgcaaVWINc",
+  authDomain: "rifa-clau.firebaseapp.com",
+  databaseURL: "https://rifa-clau-default-rtdb.firebaseio.com",
+  projectId: "rifa-clau",
+  storageBucket: "rifa-clau.firebasestorage.app",
+  messagingSenderId: "852551386158",
+  appId: "1:852551386158:web:75ae6222eb9921c3c10bbf",
+  measurementId: "G-KE3P7DZBTJ"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 const grid = document.getElementById("grid");
 const contador = document.getElementById("contador");
 
 const total = 100;
 const telefono = "18494501097";
 
-// 🔐 ADMIN
-const PASSWORD = "1097";
 let modoAdmin = false;
 
-document.addEventListener("keydown", () => {
-  const pass = prompt("Clave admin:");
-  if (pass === PASSWORD) {
+// 🔐 BOTÓN ADMIN
+function loginAdmin() {
+  const pass = prompt("Contraseña:");
+  if (pass === "1097") {
     modoAdmin = true;
-    alert("Modo admin activado");
+    alert("Admin activado");
+  } else {
+    alert("Incorrecto");
   }
-});
-
-let ocupados = JSON.parse(localStorage.getItem("ocupados")) || [];
-
-function actualizar() {
-  contador.textContent = `Disponibles: ${total - ocupados.length} / ${total}`;
 }
 
-actualizar();
+window.loginAdmin = loginAdmin;
 
-for (let i = 1; i <= total; i++) {
+// 🔥 TIEMPO REAL
+onSnapshot(doc(db, "rifa", "numeros"), (docSnap) => {
 
-  const div = document.createElement("div");
-  div.classList.add("numero");
-  div.textContent = i;
+  let ocupados = docSnap.exists() ? docSnap.data().lista : [];
 
-  if (ocupados.includes(i)) {
-    div.classList.add("ocupado");
-  }
+  grid.innerHTML = "";
 
-  div.onclick = () => {
+  contador.textContent = `Disponibles: ${total - ocupados.length} / ${total}`;
 
-    if (modoAdmin) {
-      if (!ocupados.includes(i)) {
-        ocupados.push(i);
-        localStorage.setItem("ocupados", JSON.stringify(ocupados));
-        div.classList.add("ocupado");
-        actualizar();
-      }
-    } else {
-      const mensaje = `Hola, quiero el número ${i} de la rifa`;
-      window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`);
+  for (let i = 1; i <= total; i++) {
+
+    const div = document.createElement("div");
+    div.classList.add("numero");
+    div.textContent = i;
+
+    if (ocupados.includes(i)) {
+      div.classList.add("ocupado");
     }
 
-  };
+    div.onclick = async () => {
 
-  grid.appendChild(div);
-}
+      if (modoAdmin) {
+        if (!ocupados.includes(i)) {
+          ocupados.push(i);
+
+          await setDoc(doc(db, "rifa", "numeros"), {
+            lista: ocupados
+          });
+        }
+      } else {
+        const mensaje = `Hola, quiero el número ${i}`;
+        window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`);
+      }
+
+    };
+
+    grid.appendChild(div);
+  }
+
+});
 
 </script>
 
