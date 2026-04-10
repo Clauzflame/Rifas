@@ -181,18 +181,18 @@ db.collection("rifa").doc("numeros")
 
     div.onclick = () => {
 
-      if (modoAdmin) {
+     if (modoAdmin) {
 
-  if (ocupados.includes(i)) {
-    // 🔄 SI YA ESTÁ VENDIDO → LO QUITA
-    ocupados = ocupados.filter(num => num !== i);
+  let nuevaLista = [...ocupados];
+
+  if (nuevaLista.includes(i)) {
+    nuevaLista = nuevaLista.filter(num => num !== i);
   } else {
-    // ➕ SI NO ESTÁ → LO AGREGA
-    ocupados.push(i);
+    nuevaLista.push(i);
   }
 
   db.collection("rifa").doc("numeros").set({
-    lista: ocupados
+    lista: nuevaLista
   });
 
 }
