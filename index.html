@@ -24,19 +24,33 @@ body {
   padding: 15px;
   background: #222;
   cursor: pointer;
+  transition: 0.2s;
+}
+
+.numero:hover {
+  transform: scale(1.05);
 }
 
 .ocupado {
   background: red;
+}
+
+button {
+  margin: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
 }
 </style>
 </head>
 
 <body>
 
-<h1>Rifa</h1>
+<h1>🎟️ Rifa</h1>
 
-<button onclick="loginAdmin()">Admin</button>
+<button onclick="loginAdmin()">Entrar Admin</button>
+<button id="salirBtn" onclick="salirAdmin()" style="display:none;">
+  Salir Admin
+</button>
 
 <div id="grid" class="grid"></div>
 
@@ -47,11 +61,26 @@ const grid = document.getElementById("grid");
 let ocupados = [];
 let modoAdmin = false;
 
+// 🔐 ENTRAR ADMIN
 function loginAdmin() {
   const pass = prompt("Clave:");
-  if (pass === "1097") modoAdmin = true;
+  if (pass === "1097") {
+    modoAdmin = true;
+    alert("Modo admin activado 🔓");
+    document.getElementById("salirBtn").style.display = "inline";
+  } else {
+    alert("Clave incorrecta ❌");
+  }
 }
 
+// 🚪 SALIR ADMIN
+function salirAdmin() {
+  modoAdmin = false;
+  alert("Saliste del modo admin 🔒");
+  document.getElementById("salirBtn").style.display = "none";
+}
+
+// 🔢 RENDER
 function render() {
   grid.innerHTML = "";
 
