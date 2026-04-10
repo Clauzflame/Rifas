@@ -1,60 +1,75 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>Test Rifa</title>
-
-<style>
-body {
-  background: black;
-  color: white;
-  text-align: center;
-  font-family: Arial;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
-  max-width: 400px;
-  margin: 20px auto;
-}
-
-.numero {
-  padding: 15px;
-  background: gray;
-  cursor: pointer;
-}
-
-.ocupado {
-  background: red;
-}
-</style>
-</head>
-
-<body>
-
-<h1>TEST NUMEROS</h1>
-
-<div id="grid" class="grid"></div>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
 <script>
 
+const firebaseConfig = {
+  apiKey: "AIzaSyD5iRdci7gDxTZcEizPJ5OfzxgcaaVWINc",
+  authDomain: "rifa-clau.firebaseapp.com",
+  projectId: "rifa-clau"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
 const grid = document.getElementById("grid");
 
-for (let i = 1; i <= 100; i++) {
-  const div = document.createElement("div");
-  div.className = "numero";
-  div.textContent = i;
+let modoAdmin = false;
 
-  div.onclick = () => {
-    div.classList.toggle("ocupado");
-  };
+// 🔐 ADMIN
+window.loginAdmin = function() {
+  const pass = prompt("Contraseña:");
+  if (pass === "1097") {
+    modoAdmin = true;
+    alert("Admin activado");
+  }
+};
 
-  grid.appendChild(div);
-}
+// 🔥 TIEMPO REAL
+db.collection("rifa").doc("numeros")
+.onSnapshot((doc) => {
+
+  let ocupados = [];
+
+  if (doc.exists) {
+    ocupados = doc.data().lista || [];
+  }
+
+  grid.innerHTML = "";
+
+  for (let i = 1; i <= 100; i++) {
+
+    const div = document.createElement("div");
+    div.className = "numero";
+    div.textContent = i;
+
+    if (ocupados.includes(i)) {
+      div.classList.add("ocupado");
+    }
+
+    div.onclick = () => {
+
+      if (modoAdmin) {
+
+        let nuevaLista = [...ocupados];
+
+        if (nuevaLista.includes(i)) {
+          nuevaLista = nuevaLista.filter(n => n !== i);
+        } else {
+          nuevaLista.push(i);
+        }
+
+        db.collection("rifa").doc("numeros").set({
+          lista: nuevaLista
+        });
+
+      }
+
+    };
+
+    grid.appendChild(div);
+  }
+
+});
 
 </script>
-
-</body>
-</html>
