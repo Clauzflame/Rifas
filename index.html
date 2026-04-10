@@ -1,194 +1,16 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>Golpe de Suerte</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-
-/* 🌌 FONDO GLOBAL (SOLO CAMBIA LA IMAGEN) */
-body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  color: white;
-  text-align: center;
-
-  background: 
-    linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.95)),
-    url("Fondo.jpg") center/cover no-repeat fixed;
-}
-
-/* 🖼️ PORTADA */
-.portada {
-  width: 100%;
-  height: 260px;
-  background: url("Portada.jpg") center/cover no-repeat;
-}
-
-/* 🏷️ TITULO */
-h1 {
-  margin: 20px 0 10px;
-  font-size: 30px;
-  letter-spacing: 1px;
-}
-
-/* 📦 INFO */
-.info-container {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  flex-wrap: wrap;
-}
-
-.box {
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(10px);
-  padding: 15px 25px;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.1);
-}
-
-/* 🎯 CONTADOR */
-.estado {
-  margin: 15px;
-  font-size: 14px;
-  color: #ccc;
-}
-
-/* 🔢 GRID */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
-  padding: 20px;
-  max-width: 520px;
-  margin: auto;
-}
-
-.numero {
-  padding: 15px;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  cursor: pointer;
-  transition: 0.25s;
-}
-
-/* ✨ HOVER PREMIUM */
-.numero:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 15px rgba(255,215,0,0.6);
-  border-color: gold;
-}
-
-/* 🔴 OCUPADO */
-.ocupado {
-  background: rgba(80,0,0,0.7);
-  border: 1px solid red;
-  cursor: not-allowed;
-}
-
-/* 💬 BOTON WHATSAPP */
-.boton {
-  display: inline-block;
-  margin: 20px;
-  padding: 15px 30px;
-  background: linear-gradient(145deg, #ffd700, #ffb300);
-  color: black;
-  font-weight: bold;
-  border-radius: 12px;
-  text-decoration: none;
-  font-size: 16px;
-  box-shadow: 0 0 20px rgba(255,215,0,0.5);
-  transition: 0.3s;
-}
-
-.boton:hover {
-  transform: scale(1.05);
-}
-
-/* 📱 RESPONSIVE */
-@media (max-width: 600px) {
-  .grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-</style>
-  .admin-btn {
-  display: block;
-  margin: 10px auto 30px;
-  padding: 10px 20px;
-  background: transparent;
-  border: 1px solid #555;
-  color: #aaa;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-.admin-btn:hover {
-  border-color: gold;
-  color: gold;
-}
-  
-</head>
-
-<body>
-
-<!-- 🖼️ PORTADA -->
-<div class="portada"></div>
-
-<h1>🎟️ Calentador de agua 110v</h1>
-
-<div class="info-container">
-  <div class="box">💰 RD$200</div>
-  <div class="box">📅 20 Abril</div>
-</div>
-
-<div class="estado" id="contador"></div>
-
-<!-- 🔢 NUMEROS -->
-<div class="grid" id="grid"></div>
-
-<!-- 💬 BOTON -->
-<a class="boton" href="https://wa.me/18494501097" target="_blank">
-  Comprar por WhatsApp
-</a>
-  
-  <button class="admin-btn" onclick="loginAdmin()">Admin</button>
-
-<script>
-
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// 🔴 PEGA AQUÍ EL CONFIG QUE COPIASTE DE FIREBASE
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyD5iRdci7gDxTZcEizPJ5OfzxgcaaVWINc",
   authDomain: "rifa-clau.firebaseapp.com",
-  databaseURL: "https://rifa-clau-default-rtdb.firebaseio.com",
   projectId: "rifa-clau",
   storageBucket: "rifa-clau.firebasestorage.app",
   messagingSenderId: "852551386158",
-  appId: "1:852551386158:web:75ae6222eb9921c3c10bbf",
-  measurementId: "G-KE3P7DZBTJ"
+  appId: "1:852551386158:web:75ae6222eb9921c3c10bbf"
 };
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -201,7 +23,7 @@ const telefono = "18494501097";
 
 let modoAdmin = false;
 
-// 🔐 BOTÓN ADMIN
+// 🔐 ADMIN
 function loginAdmin() {
   const pass = prompt("Contraseña:");
   if (pass === "1097") {
@@ -217,7 +39,11 @@ window.loginAdmin = loginAdmin;
 // 🔥 TIEMPO REAL
 onSnapshot(doc(db, "rifa", "numeros"), (docSnap) => {
 
-  let ocupados = docSnap.exists() ? docSnap.data().lista : [];
+  let ocupados = [];
+
+  if (docSnap.exists()) {
+    ocupados = docSnap.data().lista || [];
+  }
 
   grid.innerHTML = "";
 
@@ -256,6 +82,3 @@ onSnapshot(doc(db, "rifa", "numeros"), (docSnap) => {
 });
 
 </script>
-
-</body>
-</html>
