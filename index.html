@@ -2,126 +2,117 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Rifa Clau</title>
+<title>Rifas Clau</title>
 
 <style>
 body {
-  background: black;
+  margin: 0;
+  background: #0b0b0b;
   color: white;
-  text-align: center;
   font-family: Arial;
 }
 
-.grid {
+h1 {
+  text-align: center;
+  padding: 20px;
+}
+
+/* GRID */
+.container {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
-  max-width: 400px;
-  margin: 20px auto;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
 }
 
-.numero {
+/* CARD */
+.card {
+  background: #111;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(255,215,0,0.2);
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: scale(1.03);
+}
+
+/* IMAGE */
+.card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+/* CONTENT */
+.card-content {
   padding: 15px;
+}
+
+.title {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.desc {
+  font-size: 13px;
+  color: #aaa;
+  margin-bottom: 10px;
+}
+
+/* PROGRESS */
+.progress {
   background: #222;
-  cursor: pointer;
-  transition: 0.2s;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
 }
 
-.numero:hover {
-  transform: scale(1.05);
+.progress-bar {
+  height: 10px;
+  background: gold;
 }
 
-.ocupado {
-  background: red;
-}
-
-.botones {
-  margin-top: 30px;
-}
-
-button {
-  margin: 10px;
-  padding: 10px 20px;
-  cursor: pointer;
+/* BUTTON */
+.btn {
+  display: block;
+  text-align: center;
+  padding: 10px;
+  background: gold;
+  color: black;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: bold;
 }
 </style>
 </head>
 
 <body>
 
-<h1>🎟️ Rifa</h1>
+<h1>🎟️ Rifas Disponibles</h1>
 
-<div id="grid" class="grid"></div>
+<div class="container">
 
-<!-- 🔘 BOTONES ABAJO -->
-<div class="botones">
-  <button id="adminBtn" onclick="loginAdmin()">Admin</button>
-  <button id="salirBtn" onclick="salirAdmin()" style="display:none;">
-    Salir
-  </button>
+  <!-- RIFA 1 -->
+  <div class="card">
+    <img src="Portada.jpg">
+
+    <div class="card-content">
+      <div class="title">iPhone 12</div>
+      <div class="desc">Participa y gana este iPhone 12 🔥</div>
+
+      <div class="progress">
+        <div class="progress-bar" style="width: 40%;"></div>
+      </div>
+
+      <small>40 / 100 vendidos</small>
+
+      <a href="rifa.html" class="btn">Ver Rifa</a>
+    </div>
+  </div>
+
 </div>
-
-<script>
-
-const grid = document.getElementById("grid");
-
-let ocupados = [];
-let modoAdmin = false;
-
-// 🔐 ENTRAR ADMIN
-function loginAdmin() {
-  const pass = prompt("Clave:");
-  if (pass === "1097") {
-    modoAdmin = true;
-    alert("Modo admin activado 🔓");
-
-    document.getElementById("adminBtn").style.display = "none";
-    document.getElementById("salirBtn").style.display = "inline";
-  } else {
-    alert("Clave incorrecta ❌");
-  }
-}
-
-// 🚪 SALIR ADMIN
-function salirAdmin() {
-  modoAdmin = false;
-  alert("Saliste del modo admin 🔒");
-
-  document.getElementById("adminBtn").style.display = "inline";
-  document.getElementById("salirBtn").style.display = "none";
-}
-
-// 🔢 RENDER
-function render() {
-  grid.innerHTML = "";
-
-  for (let i = 1; i <= 100; i++) {
-    const div = document.createElement("div");
-    div.className = "numero";
-    div.textContent = i;
-
-    if (ocupados.includes(i)) {
-      div.classList.add("ocupado");
-    }
-
-    div.onclick = () => {
-      if (modoAdmin) {
-        if (ocupados.includes(i)) {
-          ocupados = ocupados.filter(n => n !== i);
-        } else {
-          ocupados.push(i);
-        }
-        render();
-      }
-    };
-
-    grid.appendChild(div);
-  }
-}
-
-render();
-
-</script>
 
 </body>
 </html>
