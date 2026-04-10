@@ -16,14 +16,14 @@ body {
 
   background: 
     linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.95)),
-    url("fondo.jpg") center/cover no-repeat fixed;
+    url("Fondo.jpg") center/cover no-repeat fixed;
 }
 
 /* 🖼️ PORTADA */
 .portada {
   width: 100%;
   height: 260px;
-  background: url("producto.jpg") center/cover no-repeat;
+  background: url("Portada.jpg") center/cover no-repeat;
 }
 
 /* 🏷️ TITULO */
@@ -116,6 +116,24 @@ h1 {
 }
 
 </style>
+
+  .admin-btn {
+  display: block;
+  margin: 10px auto 30px;
+  padding: 10px 20px;
+  background: transparent;
+  border: 1px solid #555;
+  color: #aaa;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.admin-btn:hover {
+  border-color: gold;
+  color: gold;
+}
+  
 </head>
 
 <body>
@@ -139,6 +157,8 @@ h1 {
 <a class="boton" href="https://wa.me/18494501097" target="_blank">
   Comprar por WhatsApp
 </a>
+  
+  <button class="admin-btn" onclick="loginAdmin()">Admin</button>
 
 <script>
 
