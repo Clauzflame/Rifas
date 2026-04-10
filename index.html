@@ -1,31 +1,61 @@
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Rifa Clau</title>
+
+<style>
+body {
+  background: black;
+  color: white;
+  text-align: center;
+  font-family: Arial;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  max-width: 400px;
+  margin: 20px auto;
+}
+
+.numero {
+  padding: 15px;
+  background: #222;
+  cursor: pointer;
+}
+
+.ocupado {
+  background: red;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Rifa</h1>
+
+<button onclick="loginAdmin()">Admin</button>
+
+<div id="grid" class="grid"></div>
 
 <script>
 
 const grid = document.getElementById("grid");
 
-const total = 100;
-const telefono = "18494501097";
-
 let ocupados = [];
 let modoAdmin = false;
 
-// 🔐 ADMIN
-window.loginAdmin = function() {
-  const pass = prompt("Contraseña:");
-  if (pass === "1097") {
-    modoAdmin = true;
-    alert("Admin activado");
-  }
-};
+function loginAdmin() {
+  const pass = prompt("Clave:");
+  if (pass === "1097") modoAdmin = true;
+}
 
-// 🔥 1. GENERAR NÚMEROS SIEMPRE (NO DEPENDE DE FIREBASE)
-function renderNumeros() {
+function render() {
   grid.innerHTML = "";
 
-  for (let i = 1; i <= total; i++) {
-
+  for (let i = 1; i <= 100; i++) {
     const div = document.createElement("div");
     div.className = "numero";
     div.textContent = i;
@@ -35,64 +65,23 @@ function renderNumeros() {
     }
 
     div.onclick = () => {
-
       if (modoAdmin) {
-
         if (ocupados.includes(i)) {
           ocupados = ocupados.filter(n => n !== i);
         } else {
           ocupados.push(i);
         }
-
-        guardarFirebase();
-
-        renderNumeros();
-
-      } else {
-        const mensaje = `Hola, quiero el número ${i}`;
-        window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`);
+        render();
       }
-
     };
 
     grid.appendChild(div);
   }
 }
 
-// 🔥 2. CONECTAR FIREBASE SIN ROMPER
-function iniciarFirebase() {
-  try {
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyD5iRdci7gDxTZcEizPJ5OfzxgcaaVWINc",
-      authDomain: "rifa-clau.firebaseapp.com",
-      projectId: "rifa-clau"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
-    db.collection("rifa").doc("numeros")
-    .onSnapshot((doc) => {
-      if (doc.exists) {
-        ocupados = doc.data().lista || [];
-        renderNumeros();
-      }
-    });
-
-    window.guardarFirebase = function() {
-      db.collection("rifa").doc("numeros").set({
-        lista: ocupados
-      });
-    };
-
-  } catch (error) {
-    console.log("Firebase error:", error);
-  }
-}
-
-// 🔥 INICIAR TODO
-renderNumeros();      // 👈 SIEMPRE muestra números
-iniciarFirebase();    // 👈 intenta conectar
+render();
 
 </script>
+
+</body>
+</html>
