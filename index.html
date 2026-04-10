@@ -1,7 +1,7 @@
-<script type="module">
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+<script>
 
 const firebaseConfig = {
   apiKey: "AIzaSyD5iRdci7gDxTZcEizPJ5OfzxgcaaVWINc",
@@ -12,8 +12,9 @@ const firebaseConfig = {
   appId: "1:852551386158:web:75ae6222eb9921c3c10bbf"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+// 🔥 INICIAR FIREBASE
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
 const grid = document.getElementById("grid");
 const contador = document.getElementById("contador");
@@ -34,15 +35,14 @@ function loginAdmin() {
   }
 }
 
-window.loginAdmin = loginAdmin;
-
 // 🔥 TIEMPO REAL
-onSnapshot(doc(db, "rifa", "numeros"), (docSnap) => {
+db.collection("rifa").doc("numeros")
+.onSnapshot((doc) => {
 
   let ocupados = [];
 
-  if (docSnap.exists()) {
-    ocupados = docSnap.data().lista || [];
+  if (doc.exists) {
+    ocupados = doc.data().lista || [];
   }
 
   grid.innerHTML = "";
@@ -59,13 +59,13 @@ onSnapshot(doc(db, "rifa", "numeros"), (docSnap) => {
       div.classList.add("ocupado");
     }
 
-    div.onclick = async () => {
+    div.onclick = () => {
 
       if (modoAdmin) {
         if (!ocupados.includes(i)) {
           ocupados.push(i);
 
-          await setDoc(doc(db, "rifa", "numeros"), {
+          db.collection("rifa").doc("numeros").set({
             lista: ocupados
           });
         }
