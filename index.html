@@ -14,7 +14,7 @@ body {
   text-align: center;
   background: 
     linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.95)),
-    url("Fondo.jpg") center/cover no-repeat fixed;
+    url("Fondo1.jpg") center/cover no-repeat fixed;
 }
 
 .portada {
@@ -182,13 +182,20 @@ db.collection("rifa").doc("numeros")
     div.onclick = () => {
 
       if (modoAdmin) {
-        if (!ocupados.includes(i)) {
-          ocupados.push(i);
 
-          db.collection("rifa").doc("numeros").set({
-            lista: ocupados
-          });
-        }
+  if (ocupados.includes(i)) {
+    // 🔄 SI YA ESTÁ VENDIDO → LO QUITA
+    ocupados = ocupados.filter(num => num !== i);
+  } else {
+    // ➕ SI NO ESTÁ → LO AGREGA
+    ocupados.push(i);
+  }
+
+  db.collection("rifa").doc("numeros").set({
+    lista: ocupados
+  });
+
+}
       } else {
         const mensaje = `Hola, quiero el número ${i}`;
         window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`);
